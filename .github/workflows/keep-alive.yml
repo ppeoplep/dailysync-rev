@@ -1,0 +1,24 @@
+name: Keep Alive Workflow
+
+on:
+  schedule:
+    # 每月1号的凌晨2点运行一次，你可以根据需要调整
+    # 频率不必太高，只要在60天内运行一次即可
+    - cron: '0 2 1 * *'
+  workflow_dispatch: # 同时也允许手动触发
+
+jobs:
+  keep-alive:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # 需要有写入内容的权限
+      
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Create empty commit and push
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit --allow-empty -m "ci: keep alive"
+          git push
